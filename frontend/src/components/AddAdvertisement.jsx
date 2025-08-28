@@ -26,7 +26,7 @@ const AddAdvertisement = () => {
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const [submitMessage, setSubmitMessage] = useState("");
-  const auth = useAuth();
+  const { currentUser } = useAuth();
 
   const validateField = (name, value) => {
     let errorMsg = "";
@@ -72,7 +72,7 @@ const AddAdvertisement = () => {
       };
 
       // 2. Get a reference to the 'advertisements' list in the Realtime Database.
-      const adListRef = ref(db, `advertisements/${auth.currentUser.uid}`);
+      const adListRef = ref(db, `advertisements/${currentUser.uid}`);
 
  
 

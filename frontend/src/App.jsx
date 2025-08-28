@@ -12,11 +12,47 @@ import AddAdvertisement from "./components/AddAdvertisement";
 import AddIdea from "./components/AddIdea";
 import TalentDashboard from "./components/TalentDashboard";
 import PrivateRoute from "./components/PrivateRoute";
-import { AuthProvider } from "./context/AuthContext";
+import { AuthProvider, useAuth } from "./context/AuthContext";
 import { ThemeProvider } from "./context/ThemeContext";
 import Company from "./components/Company";
 import FindUsPage from "./components/FindUsPage";
 import "./App.css";
+
+// Separate component to use auth context
+const AppContent = () => {
+  const { currentUser } = useAuth();
+  
+  return (
+    <>
+      <Navigation user={currentUser} />
+      <main>
+        <Routes>
+          {/* --- Public Routes --- */}
+          <Route path="/home" element={<HomePage />} />
+          <Route path="/talentD" element={<TalentDashboard />} />
+          <Route path="/startup" element={<StartupPage />} />
+          <Route path="/contact" element={<ContactPage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/findus" element={<FindUsPage />} />
+          <Route path="/company" element={<Company />}/>
+
+          {/* --- Private Routes (Protected) --- */}
+          <Route element={<PrivateRoute />}>
+            <Route path="/add" element={<AddStudent />} />
+            <Route path="/post-idea" element={<AddIdea />} />
+            <Route path="/post-ad" element={<AddAdvertisement />} />
+            <Route path="/talentD" element={<TalentDashboard />} />
+          </Route>
+
+          {/* --- Redirects & Catch-all --- */}
+          <Route path="/" element={<Navigate to="/home" />} />
+          <Route path="*" element={<Navigate to="/home" />} />
+        </Routes>
+      </main>
+      <Footer />
+    </>
+  );
+};
 
 function App() {
   return (
@@ -24,32 +60,7 @@ function App() {
       <div className="App">
         <ThemeProvider>
           <AuthProvider>
-            <Navigation />
-            <main>
-              <Routes>
-                {/* --- Public Routes --- */}
-                <Route path="/home" element={<HomePage />} />
-                <Route path="/talentD" element={<TalentDashboard />} />
-                <Route path="/startup" element={<StartupPage />} />
-                <Route path="/contact" element={<ContactPage />} />
-                <Route path="/login" element={<LoginPage />} />
-                <Route path="/findus" element={<FindUsPage />} />
-                <Route path="/company" element={<Company />}/>
-
-                {/* --- Private Routes (Protected) --- */}
-                <Route element={<PrivateRoute />}>
-                  <Route path="/add" element={<AddStudent />} />
-                  <Route path="/post-idea" element={<AddIdea />} />
-                  <Route path="/post-ad" element={<AddAdvertisement />} />
-                  <Route path="/talentD" element={<TalentDashboard />} />
-                </Route>
-
-                {/* --- Redirects & Catch-all --- */}
-                <Route path="/" element={<Navigate to="/home" />} />
-                <Route path="*" element={<Navigate to="/home" />} />
-              </Routes>
-            </main>
-            <Footer />
+            <AppContent />
           </AuthProvider>
         </ThemeProvider>
       </div>

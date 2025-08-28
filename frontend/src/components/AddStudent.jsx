@@ -30,7 +30,7 @@ const AddStudent = () => {
     const [loading, setLoading] = useState(false);
     const [submitMessage, setSubmitMessage] = useState('');
 
-    const auth = useAuth();
+    const { currentUser } = useAuth();
     const { isDarkMode } = useTheme();
     const universities = ["University of Moratuwa", "University of Colombo", "University of Peradeniya", "SLIIT", "NSBM", "Other"];
     const degrees = ["BSc in Computer Science", "BEng in Software Engineering", "BSc in Information Technology", "BBA in Business Administration", "Other"];
@@ -134,7 +134,7 @@ const AddStudent = () => {
                 photoURL,
                 nicURL,
                 universityIdURL,
-                userId: auth.user.uid,
+                userId: currentUser.uid,
                 timestamp: Date.now(),
             };
 
