@@ -4,10 +4,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useLocation, Link } from 'react-router-dom';
 import TestimonialCard from '../components/TestimonialCard';
-import './HomePage.css';
-
-// Import only the necessary icons
-import { FaUserGraduate, FaBuilding, FaRocket } from 'react-icons/fa6';
+import { useTheme } from '../context/ThemeContext';
+import { FaUserGraduate, FaBuilding, FaRocket, FaArrowRight } from 'react-icons/fa6';
 
 // Import Typed.js for the animation
 import Typed from 'typed.js';
@@ -43,7 +41,11 @@ const CountUpNumber = ({ target, suffix, isVisible }) => {
     return () => clearInterval(timer);
   }, [target, isVisible]);
 
-  return <div className="stat-number">{count.toLocaleString()}{suffix}</div>;
+  return (
+    <div className="text-4xl font-bold text-primary-600 dark:text-primary-400">
+      {count.toLocaleString()}{suffix}
+    </div>
+  );
 };
 
 // =_=================================================================_
@@ -64,15 +66,10 @@ const HomePage = () => {
   const location = useLocation();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isStatsVisible, setIsStatsVisible] = useState(false);
-  const [isDarkMode, setIsDarkMode] = useState(false); // State for dark mode
+  const { isDarkMode } = useTheme();
   const aboutSectionRef = useRef(null);
   const typedEl = useRef(null);
   const typedInstanceRef = useRef(null);
-
-  // Function to toggle dark mode
-  const toggleDarkMode = () => {
-    setIsDarkMode(prevMode => !prevMode);
-  };
 
   // Effect for background image slider
   useEffect(() => {
@@ -142,93 +139,139 @@ const HomePage = () => {
   }, [location]);
 
   return (
-    <div 
-      className={`home-page-wrapper ${isDarkMode ? 'dark-mode' : ''}`} 
-      onClick={toggleDarkMode}
-    >
-
+    <div className="min-h-screen bg-secondary-50 dark:bg-secondary-900 transition-colors duration-200">
       {/* --- HERO SECTION --- */}
-      <section className="home-section hero-section">
-        <div className="hero-background">
+      <section className="relative h-screen flex items-center justify-center overflow-hidden">
+        <div className="absolute inset-0">
           {backgroundImages.map((image, index) => (
-            <img key={index} src={image} alt="Platform background" className={index === currentImageIndex ? 'active' : ''} />
+            <img 
+              key={index} 
+              src={image} 
+              alt="Platform background" 
+              className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${
+                index === currentImageIndex ? 'opacity-100' : 'opacity-0'
+              }`} 
+            />
           ))}
         </div>
-        <div className="hero-overlay"></div>
-        <div className="home-content-container">
-          <div className="hero-content">
-            <h1>Connecting <span className="highlight-text">Ambition</span> with <span className="highlight-text">Opportunity</span></h1>
-            <p>Welcome to NexusLink, the premier ecosystem designed to bridge the gap between emerging talent and innovative companies.</p>
+        <div className="absolute inset-0 bg-black/50"></div>
+        <div className="relative z-10 text-center text-white px-4 max-w-4xl mx-auto">
+          <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
+            Connecting <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-accent-400">Ambition</span> with <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-accent-400">Opportunity</span>
+          </h1>
+          <p className="text-xl md:text-2xl text-secondary-200 max-w-3xl mx-auto leading-relaxed">
+            Welcome to NexusLink, the premier ecosystem designed to bridge the gap between emerging talent and innovative companies.
+          </p>
+        </div>
+      </section>
+
+      {/* --- PERSONA SECTION --- */}
+      <section className="py-20 px-4 bg-white dark:bg-secondary-950">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold text-secondary-900 dark:text-white mb-4">
+              Are You...?
+            </h2>
+            <p className="text-xl text-secondary-600 dark:text-secondary-400 max-w-2xl mx-auto">
+              Choose your path and discover opportunities tailored to your goals
+            </p>
+          </div>
+          
+          <div className="grid md:grid-cols-3 gap-8">
+            {/* Student Card */}
+            <Link to="/talentD" className="group">
+              <div className="bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-blue-900/20 dark:to-indigo-900/20 p-8 rounded-2xl border border-blue-200 dark:border-blue-800 hover:shadow-xl hover:-translate-y-2 transition-all duration-300 h-full">
+                <div className="text-center">
+                  <div className="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
+                    <FaUserGraduate className="text-white text-2xl" />
+                  </div>
+                  <h3 className="text-2xl font-bold text-blue-900 dark:text-blue-100 mb-4">
+                    Student or Intern
+                  </h3>
+                  <p className="text-blue-700 dark:text-blue-300 mb-6 leading-relaxed">
+                    Showcase your skills, discover internships, and connect with companies that match your ambition.
+                  </p>
+                  <div className="flex items-center justify-center text-blue-600 dark:text-blue-400 font-medium group-hover:text-blue-700 dark:group-hover:text-blue-300 transition-colors duration-200">
+                    Explore Talent Profiles <FaArrowRight className="ml-2 group-hover:translate-x-1 transition-transform duration-200" />
+                  </div>
+                </div>
+              </div>
+            </Link>
+
+            {/* Company Card */}
+            <Link to="/findus" className="group">
+              <div className="bg-gradient-to-br from-green-50 to-emerald-100 dark:from-green-900/20 dark:to-emerald-900/20 p-8 rounded-2xl border border-green-200 dark:border-green-800 hover:shadow-xl hover:-translate-y-2 transition-all duration-300 h-full">
+                <div className="text-center">
+                  <div className="w-16 h-16 bg-green-600 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
+                    <FaBuilding className="text-white text-2xl" />
+                  </div>
+                  <h3 className="text-2xl font-bold text-green-900 dark:text-green-100 mb-4">
+                    Company
+                  </h3>
+                  <p className="text-green-700 dark:text-green-300 mb-6 leading-relaxed">
+                    Access a curated pool of top-tier talent, post job openings, and build your dream team effortlessly.
+                  </p>
+                  <div className="flex items-center justify-center text-green-600 dark:text-green-400 font-medium group-hover:text-green-700 dark:group-hover:text-green-300 transition-colors duration-200">
+                    Discover Top Talent <FaArrowRight className="ml-2 group-hover:translate-x-1 transition-transform duration-200" />
+                  </div>
+                </div>
+              </div>
+            </Link>
+
+            {/* Startup Card */}
+            <Link to="/startup" className="group">
+              <div className="bg-gradient-to-br from-orange-50 to-amber-100 dark:from-orange-900/20 dark:to-amber-900/20 p-8 rounded-2xl border border-orange-200 dark:border-orange-800 hover:shadow-xl hover:-translate-y-2 transition-all duration-300 h-full">
+                <div className="text-center">
+                  <div className="w-16 h-16 bg-orange-600 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
+                    <FaRocket className="text-white text-2xl" />
+                  </div>
+                  <h3 className="text-2xl font-bold text-orange-900 dark:text-orange-100 mb-4">
+                    Startup or Innovator
+                  </h3>
+                  <p className="text-orange-700 dark:text-orange-300 mb-6 leading-relaxed">
+                    Share your groundbreaking vision, find co-founders, and connect with a vibrant community of builders.
+                  </p>
+                  <div className="flex items-center justify-center text-orange-600 dark:text-orange-400 font-medium group-hover:text-orange-700 dark:group-hover:text-orange-300 transition-colors duration-200">
+                    Showcase Your Vision <FaArrowRight className="ml-2 group-hover:translate-x-1 transition-transform duration-200" />
+                  </div>
+                </div>
+              </div>
+            </Link>
           </div>
         </div>
       </section>
 
-      {/* =_=================================================================_ */}
-      {/* --- REVAMPED PERSONA SECTION (WITH REORDERED CONTENT) --- */}
-      {/* =_=================================================================_ */}
-      <section className="home-section persona-section">
-        <div className="home-content-container">
-          <div className="section-header">
-            <h2>Are You ?...</h2>
-          </div>
-          <div className="persona-cards-grid">
-            
-            {/* --- STUDENT CARD (Order Changed) --- */}
-            <Link to="/talentD" className="persona-card student-card">
-              <div className="persona-card-content">
-                <h3>Student or Intern</h3>
-                <div className="persona-card-icon"><FaUserGraduate /></div>
-                <p>Showcase your skills, discover internships, and connect with companies that match your ambition.</p>
-              </div>
-              <div className="persona-card-cta">Explore Talent Profiles <span>&rarr;</span></div>
-            </Link>
-
-            {/* --- COMPANY CARD (Order Changed) --- */}
-            <Link to="/findus" className="persona-card company-card">
-              <div className="persona-card-content">
-                <h3>Company</h3>
-                <div className="persona-card-icon"><FaBuilding /></div>
-                <p>Access a curated pool of top-tier talent, post job openings, and build your dream team effortlessly.</p>
-              </div>
-              <div className="persona-card-cta">Discover Top Talent <span>&rarr;</span></div>
-            </Link>
-
-            {/* --- STARTUP CARD (Order Changed) --- */}
-            <Link to="/startup" className="persona-card startup-card">
-              <div className="persona-card-content">
-                <h3>Startup or Innovator</h3>
-                <div className="persona-card-icon"><FaRocket /></div>
-                <p>Share your groundbreaking vision, find co-founders, and connect with a vibrant community of builders.</p>
-              </div>
-              <div className="persona-card-cta">Showcase Your Vision <span>&rarr;</span></div>
-            </Link>
-
-          </div>
-        </div>
-      </section>
-
-      {/* --- MODIFIED: "ABOUT US" SECTION --- */}
-      <section ref={aboutSectionRef} className="home-section about-section">
-        <div className="home-content-container">
-          <div className="about-split-layout">
-            <div className="about-section-left">
-              <h2 className="about-section-title">About Us</h2>
-              <div className="about-section-text">
+      {/* --- ABOUT US SECTION --- */}
+      <section ref={aboutSectionRef} className="py-20 px-4 bg-secondary-100 dark:bg-secondary-800">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid lg:grid-cols-2 gap-16 items-center">
+            <div>
+              <h2 className="text-4xl md:text-5xl font-bold text-secondary-900 dark:text-white mb-8">
+                About Us
+              </h2>
+              <div className="text-lg text-secondary-700 dark:text-secondary-300 leading-relaxed">
                 <span ref={typedEl}></span>
               </div>
             </div>
-            <div className={`large-stats-grid ${isStatsVisible ? 'stats-visible' : ''}`}>
-              <div className="stat-item">
+            
+            <div className={`grid grid-cols-2 gap-8 ${isStatsVisible ? 'animate-fade-in' : 'opacity-0'}`}>
+              <div className="text-center">
                 <CountUpNumber target={8000} suffix="+" isVisible={isStatsVisible} />
-                <div className="stat-title">Matches Made</div>
+                <div className="text-lg font-medium text-secondary-600 dark:text-secondary-400 mt-2">
+                  Matches Made
+                </div>
               </div>
-              <div className="stat-item">
+              <div className="text-center">
                 <CountUpNumber target={150} suffix="K+" isVisible={isStatsVisible} />
-                <div className="stat-title">Tech Jobs</div>
+                <div className="text-lg font-medium text-secondary-600 dark:text-secondary-400 mt-2">
+                  Tech Jobs
+                </div>
               </div>
-              <div className="stat-item">
+              <div className="text-center col-span-2">
                 <CountUpNumber target={1000} suffix="+" isVisible={isStatsVisible} />
-                <div className="stat-title">Candidates</div>
+                <div className="text-lg font-medium text-secondary-600 dark:text-secondary-400 mt-2">
+                  Candidates
+                </div>
               </div>
             </div>
           </div>
@@ -236,15 +279,24 @@ const HomePage = () => {
       </section>
 
       {/* --- TESTIMONIALS SECTION --- */}
-      <section className="home-section testimonials-section">
-        <div className="home-content-container">
-          <h2>Voices of Our Community</h2>
-          <div className="testimonials-grid">
-            {testimonialsData.map(testimonial => (<TestimonialCard key={testimonial.id} {...testimonial} />))}
+      <section className="py-20 px-4 bg-white dark:bg-secondary-950">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold text-secondary-900 dark:text-white mb-4">
+              Voices of Our Community
+            </h2>
+            <p className="text-xl text-secondary-600 dark:text-secondary-400 max-w-2xl mx-auto">
+              Hear from the people who've found success through our platform
+            </p>
+          </div>
+          
+          <div className="grid md:grid-cols-3 gap-8">
+            {testimonialsData.map(testimonial => (
+              <TestimonialCard key={testimonial.id} {...testimonial} />
+            ))}
           </div>
         </div>
       </section>
-      
     </div>
   );
 };
